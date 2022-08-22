@@ -6,57 +6,8 @@ const port = process.env.PORT || 5555;
 require('dotenv').config();
 app.use(express.json());
 
-// import the model
-const Customer = require('./model/customer.js');
+app.use('/api/v1/customers', require('./routes/customers.js'));
 
-app.get('/customers',(req,res) => {
-    try{
-    Customer.find()
-    .then(customers => res.status(200).json({ total:customers.length ,customers: customers })) 
-    }catch(err){
-        res.status(400).json({ status: 400, error: 'Unable to get customers' }); 
-    }
-    
-})
-
-app.get('/customers/:id',(req,res) => {
-    try{
-    Customer.findOne({_id: req.params.id})
-    .then(customer => res.status(200).json({ customer })) 
-    }
-    catch(err){
-        res.status(400).json({ status: 400, error: 'Unable to get customer' });
-    }
-} )
-
-
-app.post('/customers',(req,res)=>{
-    const customer = new Customer({
-        name: req.body.name,
-        age: req.body.age,
-        address: req.body.address,
-    });
-    
-        customer
-            .save()
-            .then(() => res.json({ success: true }))
-            .catch((err) =>
-                res.status(400).json({ status: 400, error: err.message })
-            );
-    
-})
-
-
-app.delete('/customers/:id',(req,res)=>{
-    try{
-    Customer.findOneAndDelete({_id: req.params.id})
-    .then(customer => res.status(201).json({ message: 'Removed Customer' })) 
-    }
-    catch(err){
-        res.status(400).json({ status: 400, error: 'Unable to delete' }); 
-    }
-}
-)
 
 const start = async () => {
   try {
